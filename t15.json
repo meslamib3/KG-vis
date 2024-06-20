@@ -1,0 +1,102 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "emmo": "http://emmo.info/emmo#",
+    "ex": "http://example.com/",
+    "is_manufacturing_input": {
+      "@id": "emmo:EMMO_e1097637",
+      "@type": "@id"
+    },
+    "has_manufacturing_output": {
+      "@id": "emmo:EMMO_e1245987",
+      "@type": "@id"
+    },
+    "is_measurement_input": {
+      "@id": "emmo:EMMO_m5677989",
+      "@type": "@id"
+    },
+    "has_measurement_output": {
+      "@id": "emmo:EMMO_m87987545",
+      "@type": "@id"
+    },
+    "has_property": {
+      "@id": "emmo:EMMO_p5778r78",
+      "@type": "@id"
+    },
+    "has_parameter": {
+      "@id": "emmo:EMMO_p46903ar7",
+      "@type": "@id"
+    },
+    "Material": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+    "Manufacturing": "emmo:EMMO_a4d66059_5dd3_4b90_b4cb_10960559441b",
+    "Measurement": "emmo:EMMO_463bcfda_867b_41d9_a967_211d4d437cfb",
+    "Property": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+    "Parameter": "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a"
+  },
+  "@graph": [
+    {
+      "@id": "ex:T",
+      "@type": "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a",
+      "skos:prefLabel": "Temperature"
+    },
+    {
+      "@id": "ex:RH",
+      "@type": "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a",
+      "skos:prefLabel": "Relative Humidity"
+    },
+    {
+      "@id": "ex:WaterContent",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Water Content",
+      "emmo:EMMO_m5677989": [
+        {"@id": "ex:T"},
+        {"@id": "ex:RH"}
+      ]
+    },
+    {
+      "@id": "ex:IonomerFilm",
+      "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+      "skos:prefLabel": "Ionomer Film",
+      "emmo:EMMO_p5778r78": [
+        {"@id": "ex:IonomerFilmThickness"},
+        {"@id": "ex:IonomerDispersion"}
+      ]
+    },
+    {
+      "@id": "ex:IonContent",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Ion Content"
+    },
+    {
+      "@id": "ex:ProtonConductivity",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Effective Proton Conductivity"
+    },
+    {
+      "@id": "ex:StructureFactor",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Structure Factor",
+      "emmo:EMMO_m5677989": {
+        "@id": "ex:Op_eff"
+      }
+    },
+    {
+      "@id": "ex:Op_eff",
+      "@type": "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a",
+      "skos:prefLabel": "Effective Proton Conductivity Factor"
+    },
+    {
+      "@id": "ex:IonomerFilmThickness",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Ionomer Film Thickness"
+    },
+    {
+      "@id": "ex:IonomerDispersion",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Ionomer Dispersion"
+    }
+  ]
+}
