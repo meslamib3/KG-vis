@@ -78,7 +78,8 @@ def extract_graph_data(data):
                     "name": node_id,
                     "symbolSize": 10,
                     "itemStyle": {"color": colors["Instance/Individual"]},
-                    "category": "Instance/Individual"
+                    "category": "Instance/Individual",
+                    "label": {"show": True, "formatter": node_id}
                 })
                 node_ids.add(node_id)
 
