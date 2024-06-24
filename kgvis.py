@@ -54,7 +54,7 @@ def extract_graph_data(data):
     # Step 1: Add Type/Class nodes
     for type_id, type_name in node_types.items():
         nodes.append({
-            "name": type_id,
+            "name": type_name,
             "symbolSize": 15,
             "itemStyle": {"color": colors[type_name]},
             "category": type_name
@@ -87,7 +87,7 @@ def extract_graph_data(data):
             if node_type in node_types.values():
                 links.append({
                     "source": node_id,
-                    "target": item["@type"],
+                    "target": node_type,
                     "value": "rdf:type"
                 })
 
@@ -266,4 +266,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-               
