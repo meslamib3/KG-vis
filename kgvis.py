@@ -46,6 +46,8 @@ def extract_graph_data(data):
         "emmo:EMMO_e1245987": "has_manufacturing_output",
         "emmo:EMMO_m5677989": "is_measurement_input",
         "emmo:EMMO_m87987545": "has_measurement_output",
+        "emmo:EMMO_m5677980": "is_model_input",
+        "emmo:EMMO_m87987546": "has_model_output",
         "emmo:EMMO_p5778r78": "has_property",
         "emmo:EMMO_p46903ar7": "has_parameter",
         "skos:prefLabel": "skos:prefLabel"
