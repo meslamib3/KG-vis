@@ -18,13 +18,13 @@ def extract_graph_data(data):
 
     node_ids = set()
     node_types = {
-        "emmo:EMMO_random1": "Matter",
+        "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94": "Matter",
         "emmo:EMMO_a4d66059_5dd3_4b90_b4cb_10960559441b": "Manufacturing",
         "emmo:EMMO_463bcfda_867b_41d9_a967_211d4d437cfb": "Measurement",
         "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba": "Property",
         "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a": "Parameter",
-        "emmo:EMMO_random2": "Simulation",
-        "emmo:EMMO_random3": "Metadata"
+        "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93": "Simulation",
+        "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd92": "Metadata"
     }
 
     colors = {
