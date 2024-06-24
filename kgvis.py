@@ -219,6 +219,7 @@ def create_echarts_option(nodes, links, layout='force'):
                 'formatter': '{b}',
                 'hideOverlap': True
             },
+            'focusNodeAdjacency': True,
             'lineStyle': {'color': 'source', 'curveness': 0.3},
             'edgeSymbol': ['none', 'arrow'],
             'edgeSymbolSize': [4, 10],
@@ -226,6 +227,10 @@ def create_echarts_option(nodes, links, layout='force'):
                 'show': True,
                 'fontSize': 8,
                 'formatter': '{c}'
+            },
+            'emphasis': {
+                'focus': 'adjacency',
+                'lineStyle': {'width': 5}
             }
         }]
     }
