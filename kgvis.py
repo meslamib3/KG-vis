@@ -12,7 +12,7 @@ def read_json_ld(file):
     return json.loads(data)
 
 # Function to extract nodes and links from JSON-LD data for graph
-def extract_graph_data(data):
+def extract_graph_data(data, hide_units_and_literals=False):
     nodes = []
     links = []
 
@@ -107,7 +107,7 @@ def extract_graph_data(data):
                             })
                         elif isinstance(v, str):
                             literal_value = f"{node_id}_{key}_{v}"
-                            if literal_value not in node_ids:
+                            if literal_value not in node_ids and not hide_units_and_literals:
                                 nodes.append({
                                     "name": literal_value,
                                     "symbolSize": 10,
@@ -115,27 +115,28 @@ def extract_graph_data(data):
                                     "category": "Value/Literal"
                                 })
                                 node_ids.add(literal_value)
-                            links.append({
-                                "source": node_id,
-                                "target": literal_value,
-                                "value": relationship_keys.get(key, key)
-                            })
-
-                            # Add Unit node for each Value node
-                            unit_node_id = f"{literal_value}_unit"
-                            if unit_node_id not in node_ids:
-                                nodes.append({
-                                    "name": unit_node_id,
-                                    "symbolSize": 10,
-                                    "itemStyle": {"color": colors["Unit"]},
-                                    "category": "Unit"
+                            if not hide_units_and_literals:
+                                links.append({
+                                    "source": node_id,
+                                    "target": literal_value,
+                                    "value": relationship_keys.get(key, key)
                                 })
-                                node_ids.add(unit_node_id)
-                            links.append({
-                                "source": literal_value,
-                                "target": unit_node_id,
-                                "value": "skos:prefLabel"
-                            })
+
+                                # Add Unit node for each Value node
+                                unit_node_id = f"{literal_value}_unit"
+                                if unit_node_id not in node_ids:
+                                    nodes.append({
+                                        "name": unit_node_id,
+                                        "symbolSize": 10,
+                                        "itemStyle": {"color": colors["Unit"]},
+                                        "category": "Unit"
+                                    })
+                                    node_ids.add(unit_node_id)
+                                links.append({
+                                    "source": literal_value,
+                                    "target": unit_node_id,
+                                    "value": "skos:prefLabel"
+                                })
                 elif isinstance(value, dict) and "@id" in value:
                     links.append({
                         "source": node_id,
@@ -144,7 +145,7 @@ def extract_graph_data(data):
                     })
                 else:
                     literal_value = f"{node_id}_{key}_{value}"
-                    if literal_value not in node_ids:
+                    if literal_value not in node_ids and not hide_units_and_literals:
                         nodes.append({
                             "name": literal_value,
                             "symbolSize": 10,
@@ -152,27 +153,28 @@ def extract_graph_data(data):
                             "category": "Value/Literal"
                         })
                         node_ids.add(literal_value)
-                    links.append({
-                        "source": node_id,
-                        "target": literal_value,
-                        "value": relationship_keys.get(key, key)
-                    })
-
-                    # Add Unit node for each Value node
-                    unit_node_id = f"{literal_value}_unit"
-                    if unit_node_id not in node_ids:
-                        nodes.append({
-                            "name": unit_node_id,
-                            "symbolSize": 10,
-                            "itemStyle": {"color": colors["Unit"]},
-                            "category": "Unit"
+                    if not hide_units_and_literals:
+                        links.append({
+                            "source": node_id,
+                            "target": literal_value,
+                            "value": relationship_keys.get(key, key)
                         })
-                        node_ids.add(unit_node_id)
-                    links.append({
-                        "source": literal_value,
-                        "target": unit_node_id,
-                        "value": "skos:prefLabel"
-                    })
+
+                        # Add Unit node for each Value node
+                        unit_node_id = f"{literal_value}_unit"
+                        if unit_node_id not in node_ids:
+                            nodes.append({
+                                "name": unit_node_id,
+                                "symbolSize": 10,
+                                "itemStyle": {"color": colors["Unit"]},
+                                "category": "Unit"
+                            })
+                            node_ids.add(unit_node_id)
+                        links.append({
+                            "source": literal_value,
+                            "target": unit_node_id,
+                            "value": "skos:prefLabel"
+                        })
 
     return nodes, links
 
@@ -243,6 +245,8 @@ def main():
     st.set_page_config(layout="wide")
     st.title("JSON-LD Graph Visualization")
 
+    hide_units_and_literals = st.checkbox("Hide Unit and Value/Literal Nodes")
+
     uploaded_file = st.file_uploader("Upload a JSON-LD file", type="json")
     if uploaded_file is not None:
         try:
@@ -255,7 +259,7 @@ def main():
                 st.error(f"JSON Decode Error: {e}")
                 return
 
-            nodes, links = extract_graph_data(edited_data)
+            nodes, links = extract_graph_data(edited_data, hide_units_and_literals)
             if not nodes or not links:
                 st.error("No nodes or links extracted from JSON-LD data. Please check the structure of your JSON-LD.")
                 return
