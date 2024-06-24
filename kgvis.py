@@ -183,10 +183,6 @@ def create_echarts_option(nodes, links, layout='force'):
             'top': 'bottom',
             'left': 'right'
         },
-        'tooltip': {
-            'trigger': 'item',
-            'formatter': '{a} <br/>{b} : {c}'
-        },
         'legend': [{
             'data': ['Matter', 'Manufacturing', 'Measurement', 'Property', 'Parameter', 'Simulation', 'Metadata', 'Instance/Individual', 'Value/Literal', 'Unit'],
             'orient': 'vertical',
@@ -231,6 +227,9 @@ def create_echarts_option(nodes, links, layout='force'):
             'emphasis': {
                 'focus': 'adjacency',
                 'lineStyle': {'width': 5}
+            },
+            'tooltip': {
+                'show': False
             }
         }]
     }
@@ -267,3 +266,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+               
