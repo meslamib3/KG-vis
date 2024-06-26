@@ -328,6 +328,132 @@ def create_echarts_option(nodes, links, layout='force'):
 
     return option
 
+# Examples to be displayed at the bottom
+examples = [
+    {
+        "description": "Linking Material to Manufacturing",
+        "nodes": ["Material", "Manufacturing"],
+        "relationship": "is_manufacturing_input",
+        "purpose": "To indicate which materials are inputs for specific manufacturing processes.",
+        "json_ld": {
+            "@id": "ex:Material",
+            "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+            "skos:prefLabel": "Material",
+            "emmo:EMMO_e1097637": {
+                "@id": "ex:Manufacturing"
+            }
+        }
+    },
+    {
+        "description": "Linking Manufacturing to Material",
+        "nodes": ["Manufacturing", "Material"],
+        "relationship": "has_manufacturing_output",
+        "purpose": "To show which materials are produced as outputs from manufacturing processes.",
+        "json_ld": {
+            "@id": "ex:Manufacturing",
+            "@type": "emmo:EMMO_a4d66059_5dd3_4b90_b4cb_10960559441b",
+            "skos:prefLabel": "Manufacturing",
+            "emmo:EMMO_e1245987": {
+                "@id": "ex:Material"
+            }
+        }
+    },
+    {
+        "description": "Linking Measurement to Material",
+        "nodes": ["Measurement", "Material"],
+        "relationship": "is_measurement_input",
+        "purpose": "To identify which measurements are performed on specific materials.",
+        "json_ld": {
+            "@id": "ex:Measurement",
+            "@type": "emmo:EMMO_463bcfda_867b_41d9_a967_211d4d437cfb",
+            "skos:prefLabel": "Measurement",
+            "emmo:EMMO_m5677989": {
+                "@id": "ex:Material"
+            }
+        }
+    },
+    {
+        "description": "Linking Material to Measurement",
+        "nodes": ["Material", "Measurement"],
+        "relationship": "has_measurement_output",
+        "purpose": "To track which measurements result from the study of specific materials.",
+        "json_ld": {
+            "@id": "ex:Material",
+            "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+            "skos:prefLabel": "Material",
+            "emmo:EMMO_m87987545": {
+                "@id": "ex:Measurement"
+            }
+        }
+    },
+    {
+        "description": "Linking Model to Material",
+        "nodes": ["Simulation", "Material"],
+        "relationship": "is_model_input",
+        "purpose": "To indicate which materials are inputs for simulation models.",
+        "json_ld": {
+            "@id": "ex:Simulation",
+            "@type": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93",
+            "skos:prefLabel": "Simulation",
+            "emmo:EMMO_m5677980": {
+                "@id": "ex:Material"
+            }
+        }
+    },
+    {
+        "description": "Linking Simulation to Output",
+        "nodes": ["Simulation", "Property"],
+        "relationship": "has_model_output",
+        "purpose": "To show which properties are predicted or calculated by simulation models.",
+        "json_ld": {
+            "@id": "ex:Simulation",
+            "@type": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93",
+            "skos:prefLabel": "Simulation",
+            "emmo:EMMO_m87987546": {
+                "@id": "ex:Property"
+            }
+        }
+    },
+    {
+        "description": "Linking Property to Material",
+        "nodes": ["Property", "Material"],
+        "relationship": "has_property",
+        "purpose": "To describe specific properties associated with materials.",
+        "json_ld": {
+            "@id": "ex:Material",
+            "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+            "skos:prefLabel": "Material",
+            "emmo:EMMO_p5778r78": {
+                "@id": "ex:Property"
+            }
+        }
+    },
+    {
+        "description": "Linking Parameter to Property",
+        "nodes": ["Parameter", "Property"],
+        "relationship": "has_parameter",
+        "purpose": "To specify parameters that define properties.",
+        "json_ld": {
+            "@id": "ex:Property",
+            "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+            "skos:prefLabel": "Property",
+            "emmo:EMMO_p46903ar7": {
+                "@id": "ex:Parameter"
+            }
+        }
+    }
+]
+
+# Function to display examples
+def display_examples():
+    st.subheader("Examples")
+    for example in examples:
+        with st.expander(example["description"]):
+            st.write(f"**Nodes:** {', '.join(example['nodes'])}")
+            st.write(f"**Relationship:** {example['relationship']}")
+            st.write(f"**Purpose:** {example['purpose']}")
+            st.code(json.dumps(example["json_ld"], indent=2), language='json')
+
 # Streamlit app
 def main():
     st.set_page_config(layout="wide")
@@ -360,6 +486,8 @@ def main():
 
     option = create_echarts_option(nodes, links, layout='force')
     st_echarts(options=option, height="1000px")
+
+    display_examples()
 
 if __name__ == "__main__":
     main()
