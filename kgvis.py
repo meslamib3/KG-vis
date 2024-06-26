@@ -3,6 +3,94 @@ import json
 import chardet
 from streamlit_echarts import st_echarts
 
+# Default JSON-LD data
+default_json_ld = {
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "emmo": "http://emmo.info/emmo#",
+    "ex": "http://example.com/",
+    "is_manufacturing_input": {
+      "@id": "emmo:EMMO_e1097637",
+      "@type": "@id"
+    },
+    "has_manufacturing_output": {
+      "@id": "emmo:EMMO_e1245987",
+      "@type": "@id"
+    },
+    "is_measurement_input": {
+      "@id": "emmo:EMMO_m5677989",
+      "@type": "@id"
+    },
+    "has_measurement_output": {
+      "@id": "emmo:EMMO_m87987545",
+      "@type": "@id"
+    },
+    "is_model_input": {
+      "@id": "emmo:EMMO_m5677980",
+      "@type": "@id"
+    },
+    "has_model_output": {
+      "@id": "emmo:EMMO_m87987546",
+      "@type": "@id"
+    },
+    "has_property": {
+      "@id": "emmo:EMMO_p5778r78",
+      "@type": "@id"
+    },
+    "has_parameter": {
+      "@id": "emmo:EMMO_p46903ar7",
+      "@type": "@id"
+    },
+    "Material": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+    "Manufacturing": "emmo:EMMO_a4d66059_5dd3_4b90_b4cb_10960559441b",
+    "Measurement": "emmo:EMMO_463bcfda_867b_41d9_a967_211d4d437cfb",
+    "Property": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+    "Parameter": "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a",
+    "Simulation": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93",
+    "Metadata": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd92"
+  },
+  "@graph": [
+    {
+      "@id": "ex:Material",
+      "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
+      "skos:prefLabel": "Material"
+    },
+    {
+      "@id": "ex:Manufacturing",
+      "@type": "emmo:EMMO_a4d66059_5dd3_4b90_b4cb_10960559441b",
+      "skos:prefLabel": "Manufacturing"
+    },
+    {
+      "@id": "ex:Measurement",
+      "@type": "emmo:EMMO_463bcfda_867b_41d9_a967_211d4d437cfb",
+      "skos:prefLabel": "Measurement"
+    },
+    {
+      "@id": "ex:Property",
+      "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
+      "skos:prefLabel": "Property"
+    },
+    {
+      "@id": "ex:Parameter",
+      "@type": "emmo:EMMO_d1d436e7_72fc_49cd_863b_7bfb4ba5276a",
+      "skos:prefLabel": "Parameter"
+    },
+    {
+      "@id": "ex:Simulation",
+      "@type": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93",
+      "skos:prefLabel": "Simulation"
+    },
+    {
+      "@id": "ex:Metadata",
+      "@type": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd92",
+      "skos:prefLabel": "Metadata"
+    }
+  ]
+}
+
 # Function to read and parse the uploaded JSON-LD file
 def read_json_ld(file):
     raw_data = file.read()
@@ -247,28 +335,22 @@ def main():
 
     hide_units_and_literals = st.checkbox("Hide Unit and Value/Literal Nodes")
 
-    uploaded_file = st.file_uploader("Upload a JSON-LD file", type="json")
-    if uploaded_file is not None:
-        try:
-            data = read_json_ld(uploaded_file)
+    default_data_str = json.dumps(default_json_ld, indent=2)
+    editable_data = st.text_area("Edit JSON-LD Data", value=default_data_str, height=400)
 
-            editable_data = st.text_area("Edit JSON-LD Data", value=json.dumps(data, indent=2), height=400)
-            try:
-                edited_data = json.loads(editable_data)
-            except json.JSONDecodeError as e:
-                st.error(f"JSON Decode Error: {e}")
-                return
+    try:
+        edited_data = json.loads(editable_data)
+    except json.JSONDecodeError as e:
+        st.error(f"JSON Decode Error: {e}")
+        return
 
-            nodes, links = extract_graph_data(edited_data, hide_units_and_literals)
-            if not nodes or not links:
-                st.error("No nodes or links extracted from JSON-LD data. Please check the structure of your JSON-LD.")
-                return
+    nodes, links = extract_graph_data(edited_data, hide_units_and_literals)
+    if not nodes or not links:
+        st.error("No nodes or links extracted from JSON-LD data. Please check the structure of your JSON-LD.")
+        return
 
-            option = create_echarts_option(nodes, links, layout='force')
-            st_echarts(options=option, height="1000px")
-        
-        except Exception as e:
-            st.error(f"Error: {e}")
+    option = create_echarts_option(nodes, links, layout='force')
+    st_echarts(options=option, height="1000px")
 
 if __name__ == "__main__":
     main()
