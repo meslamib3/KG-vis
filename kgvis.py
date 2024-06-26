@@ -335,8 +335,17 @@ def main():
 
     hide_units_and_literals = st.checkbox("Hide Unit and Value/Literal Nodes")
 
+    # Show a sample JSON-LD graph by default
     default_data_str = json.dumps(default_json_ld, indent=2)
     editable_data = st.text_area("Edit JSON-LD Data", value=default_data_str, height=400)
+
+    uploaded_file = st.file_uploader("Upload a JSON-LD file", type="json")
+    if uploaded_file is not None:
+        try:
+            data = read_json_ld(uploaded_file)
+            editable_data = st.text_area("Edit JSON-LD Data", value=json.dumps(data, indent=2), height=400)
+        except Exception as e:
+            st.error(f"Error reading uploaded file: {e}")
 
     try:
         edited_data = json.loads(editable_data)
