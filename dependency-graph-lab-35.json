@@ -1,0 +1,795 @@
+{
+    "nodes": [
+        {
+            "id": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_c6f01abc",
+            "component_id": 0
+        },
+        {
+            "id": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_9bdbe886",
+            "component_id": 1
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-PSI-Exp-prism-preparation-atr-ftir_IoC-NA_upload20260204_74abbcab",
+            "component_id": 0
+        },
+        {
+            "id": "HZB-Mod-structural-digital-twins-multi-scale-tomographies_IoC-NA_upload20260204_1d9f46bb",
+            "component_id": 0
+        },
+        {
+            "id": "CEA-Mod-europium-model-fitting_IoC-NA_upload20260313_6673f358",
+            "component_id": 1
+        },
+        {
+            "id": "CEA-Mod-europium-2d-mea-model_IoC-11_upload20260318_2d3c9791",
+            "component_id": 2
+        },
+        {
+            "id": "HZB-Exp-lab-ct-gdl-mpl_IoC-NA_upload20260318_22c099fa",
+            "component_id": 3
+        },
+        {
+            "id": "ULEI-Exp-rde-mono-polycrystalline-electrodes_IoC-NA_upload20260318_984af955",
+            "component_id": 4
+        },
+        {
+            "id": "HZB-Mod-image-classification-x-ray-tomography_IoC-NA_upload20260318_c99e73ae",
+            "component_id": 3
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-clsm-acidic-unsupported-electrodes_IoC-NA_upload20260318_e9ff90f7",
+            "component_id": 5
+        },
+        {
+            "id": "FZJ-IET-3-Mod-ink-composition_IoC-11_upload20260318_15fdfd1b",
+            "component_id": 6
+        },
+        {
+            "id": "FZJ-IET-3-Mod-composition-property_IoC-NA_upload20260318_cc8ca796",
+            "component_id": 6
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-eis-nanostructured-electrodes_IoC-04_upload20260318_ec55231e",
+            "component_id": 7
+        },
+        {
+            "id": "FZJ-IET-3-Mod-performance-model-mea-prediction_IoC-NA_upload20260318_c7fdf8e0",
+            "component_id": 6
+        },
+        {
+            "id": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260318_fe3839af",
+            "component_id": 8
+        },
+        {
+            "id": "PSI-Mod-voxel-3d-diffusivity-simulation_IoC-04_upload20260318_57c1c82f",
+            "component_id": 9
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-PSI-Exp-in-situ-ftir-atr-configuration_IoC-07_upload20260318_c5efbc3a",
+            "component_id": 10
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-rde-nanostructured-electrodes_IoC-NA_upload20260318_c54c474b",
+            "component_id": 11
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Mod-transmission-line-model-fitting-cl-eis_IoC-NA_upload20260318_1f5ff70f",
+            "component_id": 12
+        },
+        {
+            "id": "HZB-Mod-image-parameter-extraction-3d-x-ray-tomography_IoC-NA_upload20260318_6d1aa8ee",
+            "component_id": 3
+        },
+        {
+            "id": "BOSCH-Exp-gas-permeability-gdl-defined-compression_IoC-NA_upload20260318_9d96b43f",
+            "component_id": 8
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-PSI-Exp-gde-cell-electrochemical-studies_IoC-NA_upload20260318_3b0afab4",
+            "component_id": 13
+        },
+        {
+            "id": "PSI-Exp-pulsed-gas-analysis_IoC-04_upload20260318_673d0c1e",
+            "component_id": 14
+        },
+        {
+            "id": "CEA-Exp-roller-mixer-zirconia-beads-ref-pefc-inks_IoC-04_upload20260318_53b429b5",
+            "component_id": 15
+        },
+        {
+            "id": "HZB-Exp-fib-gdl-mpl-catalyst_IoC-11_upload20260318_a1345a30",
+            "component_id": 3
+        },
+        {
+            "id": "CEA-Exp-blade-coating-decal-transfer-ref-pefc-ccm_IoC-NA_upload20260318_db619658",
+            "component_id": 15
+        },
+        {
+            "id": "BOSCH-Exp-electrical-tlm-characterization-gdl-defined-compression_IoC-NA_upload20260318_42406e0d",
+            "component_id": 16
+        },
+        {
+            "id": "PSI-Exp-mpl-saturation-determination-x-ray-ct_IoC-NA_upload20260318_dc8c561a",
+            "component_id": 17
+        },
+        {
+            "id": "CEA-Mod-europium-2d-mea-model_IoC-NA_upload20260318_dd2ab8a8",
+            "component_id": 1
+        },
+        {
+            "id": "BOSCH-Mod-mpl-parameter-estimation-gdl-substrate_IoC-NA_upload20260318_a33d1918",
+            "component_id": 18
+        },
+        {
+            "id": "HZB-Mod-image-classification-fib-tomography_IoC-11_upload20260318_c7c57cb2",
+            "component_id": 3
+        },
+        {
+            "id": "PSI-Exp-hg-porosimetry-gdl_IoC-NA_upload20260318_789acc8e",
+            "component_id": 8
+        },
+        {
+            "id": "CEA-Exp-tem-eds-analysis-mea_IoC-NA_upload20260318_ffed1e46",
+            "component_id": 19
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-PSI-Exp-in-situ-ftir-atr-configuration_IoC-07_upload20260318_d80b3207",
+            "component_id": 10
+        },
+        {
+            "id": "HZB-Mod-image-parameter-extraction-3d-fib-tomography_IoC-11_upload20260318_c9ddf4cc",
+            "component_id": 3
+        },
+        {
+            "id": "HZB-Mod-image-classification-tem_IoC-11_upload20260318_4d744d32",
+            "component_id": 3
+        },
+        {
+            "id": "CEA-Exp-electron-tomography-pt-ionomer-distribution-carbon-aggregate_IoC-NA_upload20260318_a439a9e6",
+            "component_id": 20
+        },
+        {
+            "id": "HZB-Mod-image-parameter-extraction-3d-tem_IoC-11_upload20260318_fa464009",
+            "component_id": 3
+        },
+        {
+            "id": "PSI-Exp-wilhelmy-wettability-measurement_IoC-NA_upload20260318_20bc68fe",
+            "component_id": 21
+        },
+        {
+            "id": "HZB-Exp-sem-edx_IoC-11_upload20260318_7eccdb4e",
+            "component_id": 22
+        },
+        {
+            "id": "PSI-Exp-contact-angle-extraction-ct-data_IoC-NA_upload20260318_a599d9e8",
+            "component_id": 23
+        },
+        {
+            "id": "PSI-Exp-external-contact-angle-gdl_IoC-NA_upload20260318_0a1c2a07",
+            "component_id": 24
+        },
+        {
+            "id": "HZB-Mod-image-parameter-extraction-2d_IoC-11_upload20260318_cd4790c2",
+            "component_id": 22
+        },
+        {
+            "id": "PSI-Mod-water-retention-simulation_IoC-NA_upload20260318_dd5d4079",
+            "component_id": 25
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-PSI-Exp-dropcasted-ink-gc-tips_IoC-04_upload20260318_fd94a378",
+            "component_id": 26
+        },
+        {
+            "id": "HZB-Mod-image-parameter-extraction-2d_IoC-11_upload20260318_3708dcc2",
+            "component_id": 22
+        },
+        {
+            "id": "PSI-Exp-ct-based-capillary-pressure-saturation_IoC-NA_upload20260318_0cf322c4",
+            "component_id": 27
+        },
+        {
+            "id": "CEA-Exp-electron-tomography-pt-ionomer-distribution-carbon-aggregate_IoC-NA_upload20260318_0dfa2a52",
+            "component_id": 28
+        },
+        {
+            "id": "PSI-Mod-voxel-3d-diffusivity-simulation_IoC-NA_upload20260318_617d061c",
+            "component_id": 29
+        },
+        {
+            "id": "PSI-Mod-voxel-3d-permability-simulation_IoC-04_upload20260318_5b89babd",
+            "component_id": 30
+        },
+        {
+            "id": "CEA-Exp-blade-coating-decal-transfer-ref-pefc-ccm_IoC-11_upload20260318_44c68cb2",
+            "component_id": 31
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-transparent-electrodes-clsm_IoC-NA_upload20260318_0ca33732",
+            "component_id": 32
+        },
+        {
+            "id": "BOSCH-Exp-gdl-compressability_IoC-05_upload20260318_8c70d307",
+            "component_id": 0
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-clsm-acidic-unsupported-electrodes_IoC-NA_upload20260318_60b75205",
+            "component_id": 32
+        },
+        {
+            "id": "BOSCH-Exp-gas-permeability-gdl-defined-compression_IoC-NA_upload20260318_be7ef4af",
+            "component_id": 8
+        },
+        {
+            "id": "PSI-Exp-cl-saturation-determination-saxs-sans_IoC-NA_upload20260318_580d6c8a",
+            "component_id": 33
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-rde-nanostructured-electrodes_IoC-NA_upload20260318_001a225a",
+            "component_id": 26
+        },
+        {
+            "id": "PSI-Mod-water-retention-simulation_IoC-NA_upload20260318_26dd3cb5",
+            "component_id": 3
+        },
+        {
+            "id": "PSI-Mod-voxel-3d-diffusivity-simulation_IoC-04_upload20260318_4531cc76",
+            "component_id": 3
+        },
+        {
+            "id": "BOSCH-Exp-electrical-tlm-characterization-gdl-defined-compression_IoC-NA_upload20260318_e6fa5f49",
+            "component_id": 8
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-Exp-eis-nanostructured-electrodes_IoC-NA_upload20260318_c1e2ee1b",
+            "component_id": 26
+        },
+        {
+            "id": "HZB-Exp-fib-gdl-mpl-catalyst_IoC-11_upload20260318_fb7e7c33",
+            "component_id": 31
+        },
+        {
+            "id": "PSI-Mod-voxel-3d-permability-simulation_IoC-NA_upload20260318_b7195490",
+            "component_id": 3
+        },
+        {
+            "id": "ICPEES-CNRS-Unistra-PSI-Exp-gde-cell-electrochemical-studies_IoC-NA_upload20260318_eaa9574a",
+            "component_id": 26
+        },
+        {
+            "id": "BOSCH-Mod-mpl-parameter-estimation-gdl-substrate_IoC-NA_upload20260318_3d0246bb",
+            "component_id": 8
+        }
+    ],
+    "edges": [
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_c6f01abc",
+            "to": "ICPEES-CNRS-Unistra-PSI-Exp-prism-preparation-atr-ftir_IoC-NA_upload20260204_74abbcab",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_c6f01abc",
+            "to": "HZB-Mod-structural-digital-twins-multi-scale-tomographies_IoC-NA_upload20260204_1d9f46bb",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_9bdbe886",
+            "to": "CEA-Mod-europium-model-fitting_IoC-NA_upload20260313_6673f358",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Exp-lab-ct-gdl-mpl_IoC-NA_upload20260318_22c099fa",
+            "to": "HZB-Mod-image-classification-x-ray-tomography_IoC-NA_upload20260318_c99e73ae",
+            "relation": "input"
+        },
+        {
+            "from": "FZJ-IET-3-Mod-ink-composition_IoC-11_upload20260318_15fdfd1b",
+            "to": "FZJ-IET-3-Mod-composition-property_IoC-NA_upload20260318_cc8ca796",
+            "relation": "input"
+        },
+        {
+            "from": "FZJ-IET-3-Mod-ink-composition_IoC-11_upload20260318_15fdfd1b",
+            "to": "FZJ-IET-3-Mod-performance-model-mea-prediction_IoC-NA_upload20260318_c7fdf8e0",
+            "relation": "input"
+        },
+        {
+            "from": "FZJ-IET-3-Mod-composition-property_IoC-NA_upload20260318_cc8ca796",
+            "to": "FZJ-IET-3-Mod-performance-model-mea-prediction_IoC-NA_upload20260318_c7fdf8e0",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-x-ray-tomography_IoC-NA_upload20260318_c99e73ae",
+            "to": "HZB-Mod-image-parameter-extraction-3d-x-ray-tomography_IoC-NA_upload20260318_6d1aa8ee",
+            "relation": "input"
+        },
+        {
+            "from": "CEA-Exp-roller-mixer-zirconia-beads-ref-pefc-inks_IoC-04_upload20260318_53b429b5",
+            "to": "CEA-Exp-blade-coating-decal-transfer-ref-pefc-ccm_IoC-NA_upload20260318_db619658",
+            "relation": "input"
+        },
+        {
+            "from": "CEA-Mod-europium-model-fitting_IoC-NA_upload20260313_6673f358",
+            "to": "CEA-Mod-europium-2d-mea-model_IoC-NA_upload20260318_dd2ab8a8",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Exp-fib-gdl-mpl-catalyst_IoC-11_upload20260318_a1345a30",
+            "to": "HZB-Mod-image-classification-fib-tomography_IoC-11_upload20260318_c7c57cb2",
+            "relation": "input"
+        },
+        {
+            "from": "ICPEES-CNRS-Unistra-PSI-Exp-in-situ-ftir-atr-configuration_IoC-07_upload20260318_c5efbc3a",
+            "to": "ICPEES-CNRS-Unistra-PSI-Exp-in-situ-ftir-atr-configuration_IoC-07_upload20260318_d80b3207",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-fib-tomography_IoC-11_upload20260318_c7c57cb2",
+            "to": "HZB-Mod-image-parameter-extraction-3d-fib-tomography_IoC-11_upload20260318_c9ddf4cc",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-tem_IoC-11_upload20260318_4d744d32",
+            "to": "HZB-Mod-image-parameter-extraction-3d-tem_IoC-11_upload20260318_fa464009",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Exp-sem-edx_IoC-11_upload20260318_7eccdb4e",
+            "to": "HZB-Mod-image-parameter-extraction-2d_IoC-11_upload20260318_cd4790c2",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Exp-sem-edx_IoC-11_upload20260318_7eccdb4e",
+            "to": "HZB-Mod-image-parameter-extraction-2d_IoC-11_upload20260318_3708dcc2",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_c6f01abc",
+            "to": "BOSCH-Exp-gdl-compressability_IoC-05_upload20260318_8c70d307",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260203_c6f01abc",
+            "to": "BOSCH-Exp-gdl-compressability_IoC-05_upload20260318_8c70d307",
+            "relation": "additional_input"
+        },
+        {
+            "from": "ICPEES-CNRS-Unistra-Exp-transparent-electrodes-clsm_IoC-NA_upload20260318_0ca33732",
+            "to": "ICPEES-CNRS-Unistra-Exp-clsm-acidic-unsupported-electrodes_IoC-NA_upload20260318_60b75205",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260318_fe3839af",
+            "to": "BOSCH-Exp-gas-permeability-gdl-defined-compression_IoC-NA_upload20260318_be7ef4af",
+            "relation": "input"
+        },
+        {
+            "from": "ICPEES-CNRS-Unistra-PSI-Exp-dropcasted-ink-gc-tips_IoC-04_upload20260318_fd94a378",
+            "to": "ICPEES-CNRS-Unistra-Exp-rde-nanostructured-electrodes_IoC-NA_upload20260318_001a225a",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-x-ray-tomography_IoC-NA_upload20260318_c99e73ae",
+            "to": "PSI-Mod-water-retention-simulation_IoC-NA_upload20260318_26dd3cb5",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-tem_IoC-11_upload20260318_4d744d32",
+            "to": "PSI-Mod-voxel-3d-diffusivity-simulation_IoC-04_upload20260318_4531cc76",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-fib-tomography_IoC-11_upload20260318_c7c57cb2",
+            "to": "PSI-Mod-voxel-3d-diffusivity-simulation_IoC-04_upload20260318_4531cc76",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-x-ray-tomography_IoC-NA_upload20260318_c99e73ae",
+            "to": "PSI-Mod-voxel-3d-diffusivity-simulation_IoC-04_upload20260318_4531cc76",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260318_fe3839af",
+            "to": "BOSCH-Exp-electrical-tlm-characterization-gdl-defined-compression_IoC-NA_upload20260318_e6fa5f49",
+            "relation": "input"
+        },
+        {
+            "from": "ICPEES-CNRS-Unistra-PSI-Exp-dropcasted-ink-gc-tips_IoC-04_upload20260318_fd94a378",
+            "to": "ICPEES-CNRS-Unistra-Exp-eis-nanostructured-electrodes_IoC-NA_upload20260318_c1e2ee1b",
+            "relation": "input"
+        },
+        {
+            "from": "CEA-Exp-blade-coating-decal-transfer-ref-pefc-ccm_IoC-11_upload20260318_44c68cb2",
+            "to": "HZB-Exp-fib-gdl-mpl-catalyst_IoC-11_upload20260318_fb7e7c33",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-tem_IoC-11_upload20260318_4d744d32",
+            "to": "PSI-Mod-voxel-3d-permability-simulation_IoC-NA_upload20260318_b7195490",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-fib-tomography_IoC-11_upload20260318_c7c57cb2",
+            "to": "PSI-Mod-voxel-3d-permability-simulation_IoC-NA_upload20260318_b7195490",
+            "relation": "input"
+        },
+        {
+            "from": "HZB-Mod-image-classification-x-ray-tomography_IoC-NA_upload20260318_c99e73ae",
+            "to": "PSI-Mod-voxel-3d-permability-simulation_IoC-NA_upload20260318_b7195490",
+            "relation": "input"
+        },
+        {
+            "from": "ICPEES-CNRS-Unistra-PSI-Exp-dropcasted-ink-gc-tips_IoC-04_upload20260318_fd94a378",
+            "to": "ICPEES-CNRS-Unistra-PSI-Exp-gde-cell-electrochemical-studies_IoC-NA_upload20260318_eaa9574a",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gdl-compressability_IoC-NA_upload20260318_fe3839af",
+            "to": "BOSCH-Mod-mpl-parameter-estimation-gdl-substrate_IoC-NA_upload20260318_3d0246bb",
+            "relation": "input"
+        },
+        {
+            "from": "BOSCH-Exp-gas-permeability-gdl-defined-compression_IoC-NA_upload20260318_9d96b43f",
+            "to": "BOSCH-Mod-mpl-parameter-estimation-gdl-substrate_IoC-NA_upload20260318_3d0246bb",
+            "relation": "input"
+        },
+        {
+            "from": "PSI-Exp-hg-porosimetry-gdl_IoC-NA_upload20260318_789acc8e",
+            "to": "BOSCH-Mod-mpl-parameter-estimation-gdl-substrate_IoC-NA_upload20260318_3d0246bb",
+            "relation": "input"
+        }
+    ],
+    "timeline": [
+        {
+            "date": "2026-02-03",
+            "num_graphs": 2,
+            "num_nodes": 2,
+            "avg_graph_length": 1,
+            "avg_in_out_degree": 0,
+            "avg_total_degree": 0
+        },
+        {
+            "date": "2026-02-04",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-05",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-06",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-07",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-08",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-09",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-10",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-11",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-12",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-13",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-14",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-15",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-16",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-17",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-18",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-19",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-20",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-21",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-22",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-23",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-24",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-25",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-26",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-27",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-02-28",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-01",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-02",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-03",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-04",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-05",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-06",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-07",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-08",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-09",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-10",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-11",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-12",
+            "num_graphs": 2,
+            "num_nodes": 4,
+            "avg_graph_length": 2,
+            "avg_in_out_degree": 0.5,
+            "avg_total_degree": 1
+        },
+        {
+            "date": "2026-03-13",
+            "num_graphs": 2,
+            "num_nodes": 5,
+            "avg_graph_length": 2.5,
+            "avg_in_out_degree": 0.6,
+            "avg_total_degree": 1.2
+        },
+        {
+            "date": "2026-03-14",
+            "num_graphs": 2,
+            "num_nodes": 5,
+            "avg_graph_length": 2.5,
+            "avg_in_out_degree": 0.6,
+            "avg_total_degree": 1.2
+        },
+        {
+            "date": "2026-03-15",
+            "num_graphs": 2,
+            "num_nodes": 5,
+            "avg_graph_length": 2.5,
+            "avg_in_out_degree": 0.6,
+            "avg_total_degree": 1.2
+        },
+        {
+            "date": "2026-03-16",
+            "num_graphs": 2,
+            "num_nodes": 5,
+            "avg_graph_length": 2.5,
+            "avg_in_out_degree": 0.6,
+            "avg_total_degree": 1.2
+        },
+        {
+            "date": "2026-03-17",
+            "num_graphs": 2,
+            "num_nodes": 5,
+            "avg_graph_length": 2.5,
+            "avg_in_out_degree": 0.6,
+            "avg_total_degree": 1.2
+        },
+        {
+            "date": "2026-03-18",
+            "num_graphs": 34,
+            "num_nodes": 65,
+            "avg_graph_length": 1.911764705882353,
+            "avg_in_out_degree": 0.5384615384615384,
+            "avg_total_degree": 1.0769230769230769
+        }
+    ]
+}
