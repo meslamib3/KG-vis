@@ -75,6 +75,77 @@ def _extract_connecting_properties(edge: dict[str, Any]) -> list[str]:
     return []
 
 
+def _iter_dataset_entries(value: Any) -> list[dict[str, Any]]:
+    groups = value if isinstance(value, list) else [value]
+    entries: list[dict[str, Any]] = []
+    for group in groups:
+        if isinstance(group, dict):
+            group = [group]
+        if not isinstance(group, list):
+            continue
+        for item in group:
+            if isinstance(item, dict):
+                entries.append(item)
+    return entries
+
+
+def _index_metadata_by_data_id(metadata: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    if not isinstance(metadata, dict):
+        return {}
+
+    records: dict[str, dict[str, Any]] = {}
+    for record in metadata.values():
+        if not isinstance(record, dict):
+            continue
+        data_id = str(((record.get("data_id") or {}).get("value")) or "").strip()
+        if data_id:
+            records[data_id] = record
+    return records
+
+
+def _build_name_to_data_ids(record: dict[str, Any]) -> dict[str, set[str]]:
+    mapping: dict[str, set[str]] = {}
+    for field_name in ("input_datasets", "additional_input_datasets"):
+        raw_value = ((record.get(field_name) or {}).get("value")) or []
+        for entry in _iter_dataset_entries(raw_value):
+            dataset_name = str(entry.get("name") or "").strip()
+            data_id = str(entry.get("dataId") or entry.get("data_id") or "").strip()
+            if not dataset_name or not data_id:
+                continue
+            mapping.setdefault(dataset_name, set()).add(data_id)
+    return mapping
+
+
+def _derive_connecting_properties(
+    source_id: str,
+    target_record: dict[str, Any] | None,
+) -> list[str]:
+    if not target_record:
+        return []
+
+    name_to_data_ids = _build_name_to_data_ids(target_record)
+    properties: list[str] = []
+    for item in ((target_record.get("input_properties") or {}).get("value")) or []:
+        if not isinstance(item, dict):
+            continue
+        property_name = str(item.get("input") or "").strip()
+        if not property_name:
+            continue
+
+        dataset_names = item.get("datasets") or []
+        if not isinstance(dataset_names, list):
+            dataset_names = [dataset_names]
+
+        for dataset_name in dataset_names:
+            dataset_key = str(dataset_name).strip()
+            if not dataset_key or dataset_key.lower() == "none":
+                continue
+            if source_id in name_to_data_ids.get(dataset_key, set()) and property_name not in properties:
+                properties.append(property_name)
+                break
+    return properties
+
+
 def _build_node_search_blob(node: dict[str, Any]) -> str:
     parts = [
         node["id"],
@@ -86,9 +157,13 @@ def _build_node_search_blob(node: dict[str, Any]) -> str:
     return " ".join(parts).lower()
 
 
-def normalize_dependency_graph(data: dict[str, Any]) -> dict[str, Any]:
+def normalize_dependency_graph(
+    data: dict[str, Any],
+    metadata: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     raw_nodes = data.get("nodes", [])
     raw_edges = data.get("edges") or data.get("links") or []
+    metadata_by_data_id = _index_metadata_by_data_id(metadata)
 
     nodes_by_id: dict[str, dict[str, Any]] = {}
     for raw_node in raw_nodes:
@@ -110,6 +185,7 @@ def normalize_dependency_graph(data: dict[str, Any]) -> dict[str, Any]:
         nodes_by_id[node["id"]] = node
 
     edges: list[dict[str, Any]] = []
+    metadata_enriched_edges = 0
     for index, raw_edge in enumerate(raw_edges):
         source = raw_edge.get("from") or raw_edge.get("source")
         target = raw_edge.get("to") or raw_edge.get("target")
@@ -135,6 +211,10 @@ def normalize_dependency_graph(data: dict[str, Any]) -> dict[str, Any]:
 
         relation = str(raw_edge.get("relation") or raw_edge.get("label") or "related_to")
         connecting_properties = _extract_connecting_properties(raw_edge)
+        if not connecting_properties and metadata_by_data_id:
+            connecting_properties = _derive_connecting_properties(source_id, metadata_by_data_id.get(target_id))
+            if connecting_properties:
+                metadata_enriched_edges += 1
         edges.append(
             {
                 "edge_id": f"edge_{index}",
@@ -161,6 +241,7 @@ def normalize_dependency_graph(data: dict[str, Any]) -> dict[str, Any]:
         "timeline": data.get("timeline", []),
         "has_property_metadata": any(edge["connecting_properties"] for edge in edges),
         "has_method_levels": bool(method_levels),
+        "metadata_enriched_edges": metadata_enriched_edges,
     }
 
 

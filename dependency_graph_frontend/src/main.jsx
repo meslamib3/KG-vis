@@ -339,6 +339,32 @@ function GraphCanvas({ renderArgs }) {
     };
   }, [renderArgs]);
 
+  useEffect(() => {
+    function onKeyDown(event) {
+      const target = event.target;
+      const tagName = target?.tagName?.toLowerCase?.() || "";
+      const isEditable =
+        Boolean(target?.isContentEditable) ||
+        tagName === "input" ||
+        tagName === "textarea" ||
+        Boolean(target?.closest?.("[contenteditable='true']"));
+
+      if (isEditable) {
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && event.key.toLowerCase() === "z") {
+        event.preventDefault();
+        setComponentValue({ eventType: "undo" });
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
   if (!renderArgs.graph.nodes.length) {
     return <EmptyState />;
   }
@@ -383,8 +409,19 @@ function GraphCanvas({ renderArgs }) {
             <span>{graphSummary.edgeCount} links</span>
             {renderArgs.graph.search_text ? <span>{graphSummary.matchCount} highlighted</span> : null}
           </div>
+          <div className="graph-panel__actions">
+            <button
+              className="graph-panel__button"
+              type="button"
+              onClick={() => {
+                setComponentValue({ eventType: "undo" });
+              }}
+            >
+              Undo
+            </button>
+          </div>
           <div className="graph-panel__help">
-            Click for details. Double-click to focus the local neighborhood. Zoom in to reveal more edge-property labels.
+            Click for details. Double-click to focus the local neighborhood. Press Ctrl/Cmd+Z or use Undo to step back.
           </div>
         </Panel>
         <FitController elements={elements} activeNodeId={activeNodeId} />

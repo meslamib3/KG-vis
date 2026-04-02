@@ -13,7 +13,12 @@ from graph_component import render_graph_component
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DEFAULT_DEPENDENCY_GRAPH_PATH = BASE_DIR / "dependency-graph-lab-35.json"
+DEFAULT_DEPENDENCY_GRAPH_PATH = (
+    BASE_DIR / "dependency-graph-lab-35-02-04-2026.json"
+    if (BASE_DIR / "dependency-graph-lab-35-02-04-2026.json").exists()
+    else BASE_DIR / "dependency-graph-lab-35.json"
+)
+DEFAULT_DEPENDENCY_METADATA_PATH = BASE_DIR / "files-metadata-lab-35-02-04-2026.json"
 ENRICHED_DEPENDENCY_GRAPH_PATH = BASE_DIR / "dependency-graph-enriched-sample.json"
 
 
@@ -321,18 +326,37 @@ def create_json_ld_option(nodes, links, categories, title, subtitle, show_edge_l
     }
 
 
-def load_source_data(source_choice, uploaded_file):
+def load_source_bundle(source_choice, uploaded_file, uploaded_metadata_file=None):
     if source_choice == "Local dependency graph":
-        return read_json_path(DEFAULT_DEPENDENCY_GRAPH_PATH)
+        metadata_data = None
+        if DEFAULT_DEPENDENCY_METADATA_PATH.exists():
+            metadata_data = read_json_path(DEFAULT_DEPENDENCY_METADATA_PATH)
+        return {
+            "graph_data": read_json_path(DEFAULT_DEPENDENCY_GRAPH_PATH),
+            "metadata_data": metadata_data,
+        }
     if source_choice == "Enriched dependency sample":
-        return read_json_path(ENRICHED_DEPENDENCY_GRAPH_PATH)
+        return {
+            "graph_data": read_json_path(ENRICHED_DEPENDENCY_GRAPH_PATH),
+            "metadata_data": None,
+        }
     if source_choice == "Default JSON-LD example":
-        return DEFAULT_JSON_LD
+        return {
+            "graph_data": DEFAULT_JSON_LD,
+            "metadata_data": None,
+        }
     if source_choice == "Upload JSON file":
         if uploaded_file is None:
             return None
-        return read_json_file(uploaded_file)
-    return DEFAULT_JSON_LD
+        metadata_data = read_json_file(uploaded_metadata_file) if uploaded_metadata_file is not None else None
+        return {
+            "graph_data": read_json_file(uploaded_file),
+            "metadata_data": metadata_data,
+        }
+    return {
+        "graph_data": DEFAULT_JSON_LD,
+        "metadata_data": None,
+    }
 
 
 def sync_editor(source_choice, source_data, uploaded_file):
@@ -346,6 +370,30 @@ def sync_editor(source_choice, source_data, uploaded_file):
     if st.session_state.get("editor_signature") != signature:
         st.session_state["editor_text"] = json.dumps(source_data, indent=2)
         st.session_state["editor_signature"] = signature
+
+
+def push_dependency_history():
+    snapshot = {
+        "focus_node": st.session_state.get("dep_focus_node"),
+        "selected_node": st.session_state.get("dep_selected_node"),
+    }
+    history = st.session_state.setdefault("dep_focus_history", [])
+    if history and history[-1] == snapshot:
+        return
+    history.append(snapshot)
+    if len(history) > 50:
+        del history[0]
+
+
+def restore_dependency_history():
+    history = st.session_state.get("dep_focus_history") or []
+    if not history:
+        return False
+
+    snapshot = history.pop()
+    st.session_state["dep_focus_node"] = snapshot.get("focus_node")
+    st.session_state["dep_selected_node"] = snapshot.get("selected_node")
+    return True
 
 
 def get_query_param_list(name):
@@ -454,6 +502,8 @@ def initialize_dependency_state(model):
     if "dep_selected_method_levels" not in st.session_state:
         requested_levels = [value for value in get_query_param_list("method_level") if value in model["method_levels"]]
         st.session_state["dep_selected_method_levels"] = requested_levels or list(model["method_levels"])
+    if "dep_focus_history" not in st.session_state:
+        st.session_state["dep_focus_history"] = []
 
     valid_components = set(model["component_ids"])
     st.session_state["dep_selected_components"] = [
@@ -486,18 +536,32 @@ def handle_dependency_event(chart_event, model):
         return False
 
     st.session_state["dep_last_event_signature"] = signature
+    if chart_event.get("eventType") == "undo":
+        return restore_dependency_history()
+
     node_id = chart_event.get("nodeId")
     if node_id not in model["nodes_by_id"]:
         return False
 
-    st.session_state["dep_selected_node"] = node_id
+    next_selected_node = node_id
+    next_focus_node = st.session_state.get("dep_focus_node")
     if chart_event.get("eventType") == "dblclick":
-        st.session_state["dep_focus_node"] = node_id
+        next_focus_node = node_id
+
+    if (
+        next_selected_node == st.session_state.get("dep_selected_node")
+        and next_focus_node == st.session_state.get("dep_focus_node")
+    ):
+        return False
+
+    push_dependency_history()
+    st.session_state["dep_selected_node"] = next_selected_node
+    st.session_state["dep_focus_node"] = next_focus_node
     return True
 
 
-def render_dependency_explorer(edited_data):
-    model = normalize_dependency_graph(edited_data)
+def render_dependency_explorer(edited_data, metadata_data=None):
+    model = normalize_dependency_graph(edited_data, metadata=metadata_data)
     initialize_dependency_state(model)
 
     st.sidebar.header("Dependency Explorer")
@@ -506,6 +570,11 @@ def render_dependency_explorer(edited_data):
     properties_available = model["has_property_metadata"]
     method_levels_available = model["has_method_levels"]
 
+    if metadata_data is not None:
+        st.sidebar.caption(
+            f"Metadata enrichment enabled: {model['metadata_enriched_edges']} edge(s) resolved from the metadata file."
+        )
+
     include_properties = st.sidebar.checkbox(
         "Include connecting properties",
         value=st.session_state["dep_include_properties"],
@@ -513,7 +582,7 @@ def render_dependency_explorer(edited_data):
         disabled=not properties_available,
     )
     if not properties_available:
-        st.sidebar.caption("Legacy file detected: no `connecting_properties` metadata is available yet.")
+        st.sidebar.caption("No edge property metadata could be derived from this graph or its metadata file.")
 
     if method_levels_available:
         selected_method_levels = st.sidebar.multiselect(
@@ -551,6 +620,8 @@ def render_dependency_explorer(edited_data):
     )
 
     if st.sidebar.button("Reset focus"):
+        if st.session_state.get("dep_focus_node") or st.session_state.get("dep_selected_node"):
+            push_dependency_history()
         st.session_state["dep_focus_node"] = None
         st.session_state["dep_selected_node"] = None
         st.rerun()
@@ -646,19 +717,31 @@ def main():
 
     source_choice = st.radio("Data source", source_options, horizontal=True)
     uploaded_file = None
+    uploaded_metadata_file = None
 
     if source_choice == "Upload JSON file":
         uploaded_file = st.file_uploader("Upload a JSON or JSON-LD file", type=["json", "jsonld"])
+        uploaded_metadata_file = st.file_uploader(
+            "Optional metadata JSON for dependency graphs",
+            type=["json"],
+            key="metadata_uploader",
+        )
         if uploaded_file is None:
             st.info("Upload a file to visualize it.")
             return
     elif source_choice == "Local dependency graph":
         st.caption(f"Loaded from `{DEFAULT_DEPENDENCY_GRAPH_PATH}`")
+        if DEFAULT_DEPENDENCY_METADATA_PATH.exists():
+            st.caption(f"Metadata loaded from `{DEFAULT_DEPENDENCY_METADATA_PATH}`")
     elif source_choice == "Enriched dependency sample":
         st.caption(f"Loaded from `{ENRICHED_DEPENDENCY_GRAPH_PATH}`")
 
     try:
-        source_data = load_source_data(source_choice, uploaded_file)
+        source_bundle = load_source_bundle(source_choice, uploaded_file, uploaded_metadata_file)
+        if source_bundle is None:
+            return
+        source_data = source_bundle["graph_data"]
+        metadata_data = source_bundle["metadata_data"]
         sync_editor(source_choice, source_data, uploaded_file)
     except Exception as exc:
         st.error(f"Error reading source data: {exc}")
@@ -678,7 +761,7 @@ def main():
         return
 
     if graph_format == "dependency-graph":
-        render_dependency_explorer(edited_data)
+        render_dependency_explorer(edited_data, metadata_data=metadata_data)
     else:
         render_json_ld_view(edited_data)
 

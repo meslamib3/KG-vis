@@ -103,6 +103,29 @@ body {
   line-height: 1.45;
 }
 
+.graph-panel__actions {
+  margin-bottom: 10px;
+}
+
+.graph-panel__button {
+  appearance: none;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(30, 41, 59, 0.96));
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+  color: #f8fafc;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+.graph-panel__button:hover {
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.2);
+  transform: translateY(-1px);
+}
+
 .method-node {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(148, 163, 184, 0.42);

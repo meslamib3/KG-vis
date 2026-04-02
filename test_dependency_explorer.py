@@ -59,6 +59,52 @@ ENRICHED_GRAPH = {
 }
 
 
+METADATA_FOR_GRAPH = {
+    "1675": {
+        "data_id": {
+            "value": "B-Mod-upload20260402_002"
+        },
+        "input_datasets": {
+            "value": [
+                [
+                    {
+                        "name": "A-file-1.txt",
+                        "dataId": "A-Exp-upload20260402_001",
+                        "fileId": 1
+                    }
+                ],
+                [
+                    {
+                        "name": "C-file-1.txt",
+                        "dataId": "C-Mod-upload20260402_003",
+                        "fileId": 2
+                    }
+                ]
+            ]
+        },
+        "additional_input_datasets": {
+            "value": []
+        },
+        "input_properties": {
+            "value": [
+                {
+                    "input": "Porosity",
+                    "datasets": ["A-file-1.txt"]
+                },
+                {
+                    "input": "Water saturation",
+                    "datasets": ["C-file-1.txt"]
+                },
+                {
+                    "input": "Ignored",
+                    "datasets": ["none"]
+                }
+            ]
+        }
+    }
+}
+
+
 class DependencyExplorerTests(unittest.TestCase):
     def test_legacy_graph_remains_supported(self):
         model = normalize_dependency_graph(LEGACY_GRAPH)
@@ -75,6 +121,30 @@ class DependencyExplorerTests(unittest.TestCase):
         self.assertTrue(model["has_property_metadata"])
         self.assertEqual(model["method_levels"], ["Low Scale", "MEA"])
         self.assertEqual(model["edges"][0]["connecting_properties"], ["Porosity", "Pt loading"])
+
+    def test_metadata_file_can_enrich_edge_properties(self):
+        graph = {
+            "nodes": ENRICHED_GRAPH["nodes"],
+            "edges": [
+                {
+                    "from": "A-Exp-upload20260402_001",
+                    "to": "B-Mod-upload20260402_002",
+                    "relation": "input"
+                },
+                {
+                    "from": "C-Mod-upload20260402_003",
+                    "to": "B-Mod-upload20260402_002",
+                    "relation": "input"
+                }
+            ]
+        }
+
+        model = normalize_dependency_graph(graph, metadata=METADATA_FOR_GRAPH)
+
+        self.assertTrue(model["has_property_metadata"])
+        self.assertEqual(model["metadata_enriched_edges"], 2)
+        self.assertEqual(model["edges"][0]["connecting_properties"], ["Porosity"])
+        self.assertEqual(model["edges"][1]["connecting_properties"], ["Water saturation"])
 
     def test_property_search_highlights_connected_nodes(self):
         model = normalize_dependency_graph(ENRICHED_GRAPH)
