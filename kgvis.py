@@ -1,3 +1,4 @@
+import inspect
 import json
 from pathlib import Path
 
@@ -359,6 +360,13 @@ def load_source_bundle(source_choice, uploaded_file, uploaded_metadata_file=None
     }
 
 
+def normalize_dependency_graph_compat(graph_data, metadata_data=None):
+    parameters = inspect.signature(normalize_dependency_graph).parameters
+    if "metadata" in parameters:
+        return normalize_dependency_graph(graph_data, metadata=metadata_data)
+    return normalize_dependency_graph(graph_data)
+
+
 def sync_editor(source_choice, source_data, uploaded_file):
     if source_data is None:
         return
@@ -561,7 +569,7 @@ def handle_dependency_event(chart_event, model):
 
 
 def render_dependency_explorer(edited_data, metadata_data=None):
-    model = normalize_dependency_graph(edited_data, metadata=metadata_data)
+    model = normalize_dependency_graph_compat(edited_data, metadata_data)
     initialize_dependency_state(model)
 
     st.sidebar.header("Dependency Explorer")
