@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    {
+      "id": "PSI-Exp-ink-screening-upload20260402_001",
+      "label": "PSI Ink Screening",
+      "component_id": "component-01",
+      "method_kind": "Experiment",
+      "method_level": "Low Scale"
+    },
+    {
+      "id": "FZJ-Mod-catalyst-layer-fit-upload20260402_002",
+      "label": "Catalyst Layer Fit",
+      "component_id": "component-01",
+      "method_kind": "Model",
+      "method_level": "MEA"
+    },
+    {
+      "id": "HZB-Mod-mea-performance-upload20260402_003",
+      "label": "MEA Performance Prediction",
+      "component_id": "component-02",
+      "method_kind": "Model",
+      "method_level": "MEA"
+    },
+    {
+      "id": "BOSCH-Exp-validation-upload20260402_004",
+      "label": "Validation Campaign",
+      "component_id": "component-02",
+      "method_kind": "Experiment",
+      "method_level": "Stack"
+    }
+  ],
+  "edges": [
+    {
+      "from": "PSI-Exp-ink-screening-upload20260402_001",
+      "to": "FZJ-Mod-catalyst-layer-fit-upload20260402_002",
+      "relation": "input",
+      "connecting_properties": [
+        "Pt loading",
+        "Ionomer content"
+      ]
+    },
+    {
+      "from": "FZJ-Mod-catalyst-layer-fit-upload20260402_002",
+      "to": "HZB-Mod-mea-performance-upload20260402_003",
+      "relation": "input",
+      "connecting_properties": [
+        "CL thickness",
+        "Porosity"
+      ]
+    },
+    {
+      "from": "HZB-Mod-mea-performance-upload20260402_003",
+      "to": "BOSCH-Exp-validation-upload20260402_004",
+      "relation": "additional_input",
+      "connecting_properties": [
+        "Current density",
+        "Water saturation"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2026-04-02",
+      "num_graphs": 1,
+      "num_nodes": 4,
+      "avg_graph_length": 3,
+      "avg_in_out_degree": 1.5,
+      "avg_total_degree": 1.5
+    }
+  ]
+}

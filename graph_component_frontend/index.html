@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dependency Graph Component</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        font-family: sans-serif;
+      }
+
+      #chart {
+        width: 100%;
+        min-height: 480px;
+      }
+
+      #status {
+        align-items: center;
+        color: #64748b;
+        display: flex;
+        font-size: 14px;
+        inset: 0;
+        justify-content: center;
+        position: absolute;
+      }
+
+      .root {
+        position: relative;
+        width: 100%;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  </head>
+  <body>
+    <div class="root">
+      <div id="status">Loading graph...</div>
+      <div id="chart"></div>
+    </div>
+    <script>
+      const COMPONENT_READY = "streamlit:componentReady";
+      const SET_COMPONENT_VALUE = "streamlit:setComponentValue";
+      const SET_FRAME_HEIGHT = "streamlit:setFrameHeight";
+      const RENDER_EVENT = "streamlit:render";
+
+      const statusNode = document.getElementById("status");
+      const chartNode = document.getElementById("chart");
+      let chart = null;
+      let resizeObserver = null;
+
+      function sendMessage(type, payload) {
+        window.parent.postMessage(
+          {
+            isStreamlitMessage: true,
+            type,
+            ...payload,
+          },
+          "*"
+        );
+      }
+
+      function setFrameHeight(height) {
+        sendMessage(SET_FRAME_HEIGHT, { height });
+      }
+
+      function setComponentValue(value) {
+        sendMessage(SET_COMPONENT_VALUE, { value });
+      }
+
+      function showStatus(message) {
+        statusNode.textContent = message;
+        statusNode.style.display = "flex";
+      }
+
+      function hideStatus() {
+        statusNode.style.display = "none";
+      }
+
+      function ensureChart() {
+        if (!window.echarts) {
+          showStatus("ECharts failed to load.");
+          return null;
+        }
+        if (!chart) {
+          chart = echarts.init(chartNode, null, { renderer: "canvas" });
+        }
+        return chart;
+      }
+
+      function attachEvents(enableEvents) {
+        if (!chart) {
+          return;
+        }
+
+        chart.off("click");
+        chart.off("dblclick");
+
+        if (!enableEvents) {
+          return;
+        }
+
+        chart.on("click", function (params) {
+          if (params.dataType === "node" && params.data && params.data.name) {
+            setComponentValue({
+              eventType: "click",
+              nodeId: params.data.name,
+            });
+          }
+        });
+
+        chart.on("dblclick", function (params) {
+          if (params.dataType === "node" && params.data && params.data.name) {
+            setComponentValue({
+              eventType: "dblclick",
+              nodeId: params.data.name,
+            });
+          }
+        });
+      }
+
+      function renderChart(args) {
+        const instance = ensureChart();
+        if (!instance) {
+          return;
+        }
+
+        const heightPx = Number(args.height_px) || 960;
+        chartNode.style.height = `${heightPx}px`;
+
+        instance.setOption(args.option || {}, true);
+        attachEvents(Boolean(args.enable_events));
+        instance.resize();
+        hideStatus();
+        window.requestAnimationFrame(function () {
+          setFrameHeight(heightPx + 8);
+        });
+      }
+
+      window.addEventListener("message", function (event) {
+        if (!event.data || event.data.type !== RENDER_EVENT) {
+          return;
+        }
+        renderChart(event.data.args || {});
+      });
+
+      window.addEventListener("resize", function () {
+        if (chart) {
+          chart.resize();
+        }
+      });
+
+      resizeObserver = new ResizeObserver(function () {
+        if (chart) {
+          chart.resize();
+        }
+      });
+      resizeObserver.observe(chartNode);
+
+      sendMessage(COMPONENT_READY, { apiVersion: 1 });
+      setFrameHeight(520);
+    </script>
+  </body>
+</html>

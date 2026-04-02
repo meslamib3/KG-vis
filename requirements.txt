@@ -1,3 +1,2 @@
 chardet
-streamlit
-streamlit-echarts
+streamlit>=1.53,<1.56

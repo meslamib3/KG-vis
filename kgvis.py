@@ -1,14 +1,20 @@
 import json
-from collections import Counter
 from pathlib import Path
 
 import chardet
 import streamlit as st
-from streamlit_echarts import st_echarts
+
+from dependency_explorer import (
+    build_dependency_view,
+    create_dependency_echarts_option,
+    normalize_dependency_graph,
+)
+from graph_component import render_graph_component
 
 
 BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_DEPENDENCY_GRAPH_PATH = BASE_DIR / "dependency-graph-lab-35.json"
+ENRICHED_DEPENDENCY_GRAPH_PATH = BASE_DIR / "dependency-graph-enriched-sample.json"
 
 
 DEFAULT_JSON_LD = {
@@ -101,29 +107,6 @@ JSON_LD_COLORS = {
 }
 
 
-DEPENDENCY_KIND_COLORS = {
-    "Experiment": "#4e79a7",
-    "Model": "#f28e2b",
-    "Other": "#9aa0a6",
-}
-
-
-DEPENDENCY_COMPONENT_COLORS = [
-    "#2f4b7c",
-    "#665191",
-    "#a05195",
-    "#d45087",
-    "#f95d6a",
-    "#ff7c43",
-    "#ffa600",
-    "#5f0f40",
-    "#0f4c5c",
-    "#1d3557",
-    "#457b9d",
-    "#2a9d8f",
-]
-
-
 RELATIONSHIP_KEYS = {
     "emmo:EMMO_e1097637": "is_manufacturing_input",
     "emmo:EMMO_e1245987": "has_manufacturing_output",
@@ -135,106 +118,6 @@ RELATIONSHIP_KEYS = {
     "emmo:EMMO_p46903ar7": "has_parameter",
     "skos:prefLabel": "skos:prefLabel",
 }
-
-
-EXAMPLES = [
-    {
-        "description": "Linking Material to Manufacturing",
-        "nodes": ["Material", "Manufacturing"],
-        "relationship": "is_manufacturing_input",
-        "purpose": "To indicate which materials are inputs for specific manufacturing processes.",
-        "json_ld": {
-            "@id": "ex:Material",
-            "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
-            "skos:prefLabel": "Material",
-            "emmo:EMMO_e1097637": {"@id": "ex:Manufacturing"},
-        },
-    },
-    {
-        "description": "Linking Manufacturing to Material",
-        "nodes": ["Manufacturing", "Material"],
-        "relationship": "has_manufacturing_output",
-        "purpose": "To show which materials are produced as outputs from manufacturing processes.",
-        "json_ld": {
-            "@id": "ex:Manufacturing",
-            "@type": "emmo:EMMO_a4d66059_5dd3_4b90_b4cb_10960559441b",
-            "skos:prefLabel": "Manufacturing",
-            "emmo:EMMO_e1245987": {"@id": "ex:Material"},
-        },
-    },
-    {
-        "description": "Linking Measurement to Material",
-        "nodes": ["Measurement", "Material"],
-        "relationship": "is_measurement_input",
-        "purpose": "To identify which measurements are performed on specific materials.",
-        "json_ld": {
-            "@id": "ex:Measurement",
-            "@type": "emmo:EMMO_463bcfda_867b_41d9_a967_211d4d437cfb",
-            "skos:prefLabel": "Measurement",
-            "emmo:EMMO_m5677989": {"@id": "ex:Material"},
-        },
-    },
-    {
-        "description": "Linking Material to Measurement",
-        "nodes": ["Material", "Measurement"],
-        "relationship": "has_measurement_output",
-        "purpose": "To track which measurements result from the study of specific materials.",
-        "json_ld": {
-            "@id": "ex:Material",
-            "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
-            "skos:prefLabel": "Material",
-            "emmo:EMMO_m87987545": {"@id": "ex:Measurement"},
-        },
-    },
-    {
-        "description": "Linking Model to Material",
-        "nodes": ["Simulation", "Material"],
-        "relationship": "is_model_input",
-        "purpose": "To indicate which materials are inputs for simulation models.",
-        "json_ld": {
-            "@id": "ex:Simulation",
-            "@type": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93",
-            "skos:prefLabel": "Simulation",
-            "emmo:EMMO_m5677980": {"@id": "ex:Material"},
-        },
-    },
-    {
-        "description": "Linking Simulation to Output",
-        "nodes": ["Simulation", "Property"],
-        "relationship": "has_model_output",
-        "purpose": "To show which properties are predicted or calculated by simulation models.",
-        "json_ld": {
-            "@id": "ex:Simulation",
-            "@type": "emmo:EMMO_EMMO_4207e895_8b83_4318_996a_72cfb32acd93",
-            "skos:prefLabel": "Simulation",
-            "emmo:EMMO_m87987546": {"@id": "ex:Property"},
-        },
-    },
-    {
-        "description": "Linking Property to Material",
-        "nodes": ["Property", "Material"],
-        "relationship": "has_property",
-        "purpose": "To describe specific properties associated with materials.",
-        "json_ld": {
-            "@id": "ex:Material",
-            "@type": "emmo:EMMO_4207e895_8b83_4318_996a_72cfb32acd94",
-            "skos:prefLabel": "Material",
-            "emmo:EMMO_p5778r78": {"@id": "ex:Property"},
-        },
-    },
-    {
-        "description": "Linking Parameter to Property",
-        "nodes": ["Parameter", "Property"],
-        "relationship": "has_parameter",
-        "purpose": "To specify parameters that define properties.",
-        "json_ld": {
-            "@id": "ex:Property",
-            "@type": "emmo:EMMO_b7bcff25_ffc3_474e_9ab5_01b1664bd4ba",
-            "skos:prefLabel": "Property",
-            "emmo:EMMO_p46903ar7": {"@id": "ex:Parameter"},
-        },
-    },
-]
 
 
 def decode_json_bytes(raw_data):
@@ -257,21 +140,6 @@ def detect_graph_format(data):
         if "nodes" in data and ("edges" in data or "links" in data):
             return "dependency-graph"
     return "unknown"
-
-
-def shorten_dependency_label(node_id, max_length=42):
-    trimmed = node_id.split("_upload", 1)[0]
-    if len(trimmed) <= max_length:
-        return trimmed
-    return f"{trimmed[: max_length - 3]}..."
-
-
-def infer_dependency_kind(node_id):
-    if "-Exp-" in node_id:
-        return "Experiment"
-    if "-Mod-" in node_id:
-        return "Model"
-    return "Other"
 
 
 def build_json_ld_categories():
@@ -398,114 +266,7 @@ def extract_json_ld_graph_data(data, hide_units_and_literals=False):
     return nodes, links, build_json_ld_categories(), summary, "JSON-LD Knowledge Graph"
 
 
-def build_dependency_categories():
-    return [
-        {"name": name, "itemStyle": {"color": color}}
-        for name, color in DEPENDENCY_KIND_COLORS.items()
-    ]
-
-
-def extract_dependency_graph_data(data, selected_components=None):
-    raw_nodes = data.get("nodes", [])
-    raw_edges = data.get("edges") or data.get("links") or []
-
-    node_map = {node["id"]: node for node in raw_nodes if "id" in node}
-    filtered_nodes = []
-    allowed_components = None if selected_components is None else set(selected_components)
-
-    for node in raw_nodes:
-        component_id = node.get("component_id")
-        if allowed_components is not None and component_id not in allowed_components:
-            continue
-        filtered_nodes.append(node)
-
-    included_node_ids = {node["id"] for node in filtered_nodes if "id" in node}
-    filtered_edges = []
-
-    for edge in raw_edges:
-        source = edge.get("from") or edge.get("source")
-        target = edge.get("to") or edge.get("target")
-        if not source or not target:
-            continue
-        if allowed_components is not None and (source not in included_node_ids or target not in included_node_ids):
-            continue
-        filtered_edges.append(edge)
-        if source not in node_map:
-            node_map[source] = {"id": source, "component_id": "Unknown"}
-            included_node_ids.add(source)
-        if target not in node_map:
-            node_map[target] = {"id": target, "component_id": "Unknown"}
-            included_node_ids.add(target)
-
-    degree_counter = Counter()
-    for edge in filtered_edges:
-        source = edge.get("from") or edge.get("source")
-        target = edge.get("to") or edge.get("target")
-        degree_counter[source] += 1
-        degree_counter[target] += 1
-
-    component_ids = sorted(
-        {node_map[node_id].get("component_id", "Unknown") for node_id in included_node_ids},
-        key=lambda value: (str(type(value)), str(value)),
-    )
-    component_colors = {
-        component_id: DEPENDENCY_COMPONENT_COLORS[index % len(DEPENDENCY_COMPONENT_COLORS)]
-        for index, component_id in enumerate(component_ids)
-    }
-
-    nodes = []
-    for node_id in sorted(included_node_ids):
-        node = node_map[node_id]
-        component_id = node.get("component_id", "Unknown")
-        kind = infer_dependency_kind(node_id)
-        degree = degree_counter[node_id]
-        nodes.append(
-            {
-                "name": node_id,
-                "symbolSize": 12 + min(degree, 6) * 3,
-                "category": kind,
-                "itemStyle": {
-                    "color": DEPENDENCY_KIND_COLORS[kind],
-                    "borderColor": component_colors.get(component_id, "#444444"),
-                    "borderWidth": 2,
-                },
-                "label": {"show": True, "formatter": shorten_dependency_label(node_id)},
-            }
-        )
-
-    links = []
-    for edge in filtered_edges:
-        source = edge.get("from") or edge.get("source")
-        target = edge.get("to") or edge.get("target")
-        relation = edge.get("relation") or edge.get("label") or "related_to"
-        links.append(
-            {
-                "source": source,
-                "target": target,
-                "value": relation,
-                "lineStyle": {"type": "dashed" if relation == "additional_input" else "solid"},
-            }
-        )
-
-    summary = {
-        "node_count": len(nodes),
-        "edge_count": len(links),
-        "component_count": len(component_ids),
-        "timeline_points": len(data.get("timeline", [])),
-    }
-    return nodes, links, build_dependency_categories(), summary, "Dependency Graph"
-
-
-def extract_graph_data(data, hide_units_and_literals=False, selected_components=None):
-    graph_format = detect_graph_format(data)
-    if graph_format == "json-ld":
-        return extract_json_ld_graph_data(data, hide_units_and_literals=hide_units_and_literals)
-    if graph_format == "dependency-graph":
-        return extract_dependency_graph_data(data, selected_components=selected_components)
-    raise ValueError("Unsupported graph format.")
-
-
-def create_echarts_option(nodes, links, categories, title, subtitle, layout="force", show_edge_labels=True):
+def create_json_ld_option(nodes, links, categories, title, subtitle, show_edge_labels):
     return {
         "title": {
             "text": title,
@@ -527,7 +288,7 @@ def create_echarts_option(nodes, links, categories, title, subtitle, layout="for
             {
                 "name": title,
                 "type": "graph",
-                "layout": layout,
+                "layout": "force",
                 "data": nodes,
                 "links": links,
                 "categories": categories,
@@ -560,19 +321,11 @@ def create_echarts_option(nodes, links, categories, title, subtitle, layout="for
     }
 
 
-def display_examples():
-    st.subheader("Examples")
-    for example in EXAMPLES:
-        with st.expander(example["description"]):
-            st.write(f"**Nodes:** {', '.join(example['nodes'])}")
-            st.write(f"**Relationship:** {example['relationship']}")
-            st.write(f"**Purpose:** {example['purpose']}")
-            st.code(json.dumps(example["json_ld"], indent=2), language="json")
-
-
 def load_source_data(source_choice, uploaded_file):
     if source_choice == "Local dependency graph":
         return read_json_path(DEFAULT_DEPENDENCY_GRAPH_PATH)
+    if source_choice == "Enriched dependency sample":
+        return read_json_path(ENRICHED_DEPENDENCY_GRAPH_PATH)
     if source_choice == "Default JSON-LD example":
         return DEFAULT_JSON_LD
     if source_choice == "Upload JSON file":
@@ -595,6 +348,52 @@ def sync_editor(source_choice, source_data, uploaded_file):
         st.session_state["editor_signature"] = signature
 
 
+def get_query_param_list(name):
+    params = st.query_params
+    getter = getattr(params, "get_all", None)
+    if callable(getter):
+        return [str(value) for value in getter(name) if str(value)]
+    value = params.get(name)
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value if str(item)]
+    return [str(value)]
+
+
+def get_query_param_value(name, default=""):
+    values = get_query_param_list(name)
+    return values[0] if values else default
+
+
+def get_query_param_bool(name, default=False):
+    raw_value = get_query_param_value(name, "true" if default else "false").strip().lower()
+    return raw_value in {"1", "true", "yes", "on"}
+
+
+def sync_dependency_query_params(focus_node, search_text, include_properties, method_levels):
+    try:
+        params = st.query_params
+        if focus_node:
+            params["focus"] = focus_node
+        elif "focus" in params:
+            del params["focus"]
+
+        if search_text.strip():
+            params["search"] = search_text.strip()
+        elif "search" in params:
+            del params["search"]
+
+        params["include_properties"] = "true" if include_properties else "false"
+
+        if method_levels:
+            params["method_level"] = list(method_levels)
+        elif "method_level" in params:
+            del params["method_level"]
+    except Exception:
+        return
+
+
 def show_summary(summary):
     metrics = [
         ("Nodes", summary.get("node_count", 0)),
@@ -609,6 +408,240 @@ def show_summary(summary):
         column.metric(label, value)
 
 
+def render_dependency_details(details):
+    st.subheader("Method Details")
+    if not details:
+        st.info("Single-click a node to inspect it. Double-click a node to focus on its connected neighborhood.")
+        return
+
+    node = details["node"]
+    st.markdown(f"**{node['label']}**")
+    st.caption(node["id"])
+
+    metadata_lines = [
+        f"Kind: {node['method_kind']}",
+        f"Component: {node['component_id']}",
+    ]
+    if node.get("method_level"):
+        metadata_lines.append(f"Level: {node['method_level']}")
+    st.write(" | ".join(metadata_lines))
+    st.write(f"Connected methods: {details['neighbor_count']}")
+
+    for title, entries in (("Incoming methods", details["incoming"]), ("Outgoing methods", details["outgoing"])):
+        st.markdown(f"**{title}**")
+        if not entries:
+            st.caption("None")
+            continue
+        for entry in entries:
+            st.write(f"- {entry['method_label']} ({entry['relation']})")
+            if entry["connecting_properties"]:
+                st.caption("Properties: " + ", ".join(entry["connecting_properties"]))
+
+
+def initialize_dependency_state(model):
+    if "dep_search_text" not in st.session_state:
+        st.session_state["dep_search_text"] = get_query_param_value("search", "")
+    if "dep_include_properties" not in st.session_state:
+        st.session_state["dep_include_properties"] = get_query_param_bool("include_properties", False)
+    if "dep_show_edge_labels" not in st.session_state:
+        st.session_state["dep_show_edge_labels"] = True
+    if "dep_focus_node" not in st.session_state:
+        st.session_state["dep_focus_node"] = get_query_param_value("focus", "") or None
+    if "dep_selected_node" not in st.session_state:
+        st.session_state["dep_selected_node"] = st.session_state.get("dep_focus_node")
+    if "dep_selected_components" not in st.session_state:
+        st.session_state["dep_selected_components"] = list(model["component_ids"])
+    if "dep_selected_method_levels" not in st.session_state:
+        requested_levels = [value for value in get_query_param_list("method_level") if value in model["method_levels"]]
+        st.session_state["dep_selected_method_levels"] = requested_levels or list(model["method_levels"])
+
+    valid_components = set(model["component_ids"])
+    st.session_state["dep_selected_components"] = [
+        value for value in st.session_state["dep_selected_components"] if value in valid_components
+    ] or list(model["component_ids"])
+
+    valid_levels = set(model["method_levels"])
+    if model["has_method_levels"]:
+        selected_levels = [
+            value for value in st.session_state["dep_selected_method_levels"] if value in valid_levels
+        ]
+        st.session_state["dep_selected_method_levels"] = selected_levels or list(model["method_levels"])
+    else:
+        st.session_state["dep_selected_method_levels"] = []
+        st.session_state["dep_include_properties"] = False
+
+    valid_node_ids = set(model["nodes_by_id"])
+    if st.session_state.get("dep_focus_node") not in valid_node_ids:
+        st.session_state["dep_focus_node"] = None
+    if st.session_state.get("dep_selected_node") not in valid_node_ids:
+        st.session_state["dep_selected_node"] = st.session_state.get("dep_focus_node")
+
+
+def handle_dependency_event(chart_event, model):
+    if not chart_event:
+        st.session_state.pop("dep_last_event_signature", None)
+        return False
+
+    signature = json.dumps(chart_event, sort_keys=True)
+    if st.session_state.get("dep_last_event_signature") == signature:
+        return False
+
+    st.session_state["dep_last_event_signature"] = signature
+    node_id = chart_event.get("nodeId")
+    if node_id not in model["nodes_by_id"]:
+        return False
+
+    st.session_state["dep_selected_node"] = node_id
+    if chart_event.get("eventType") == "dblclick":
+        st.session_state["dep_focus_node"] = node_id
+    return True
+
+
+def render_dependency_explorer(edited_data):
+    model = normalize_dependency_graph(edited_data)
+    initialize_dependency_state(model)
+
+    st.sidebar.header("Dependency Explorer")
+    st.sidebar.caption("Single-click a node to inspect it. Double-click a node to focus its connected neighborhood.")
+
+    properties_available = model["has_property_metadata"]
+    method_levels_available = model["has_method_levels"]
+
+    include_properties = st.sidebar.checkbox(
+        "Include connecting properties",
+        value=st.session_state["dep_include_properties"],
+        key="dep_include_properties",
+        disabled=not properties_available,
+    )
+    if not properties_available:
+        st.sidebar.caption("Legacy file detected: no `connecting_properties` metadata is available yet.")
+
+    if method_levels_available:
+        selected_method_levels = st.sidebar.multiselect(
+            "Filter by method level",
+            model["method_levels"],
+            default=st.session_state["dep_selected_method_levels"],
+            key="dep_selected_method_levels",
+        )
+    else:
+        st.sidebar.multiselect(
+            "Filter by method level",
+            ["Unavailable in this file"],
+            default=[],
+            disabled=True,
+        )
+        st.sidebar.caption("Legacy file detected: no `method_level` metadata is available yet.")
+        selected_method_levels = []
+
+    selected_components = st.sidebar.multiselect(
+        "Filter by component_id",
+        model["component_ids"],
+        default=st.session_state["dep_selected_components"],
+        key="dep_selected_components",
+    )
+    search_text = st.sidebar.text_input(
+        "Search methods or properties",
+        value=st.session_state["dep_search_text"],
+        key="dep_search_text",
+        placeholder="Type a method or property name",
+    )
+    show_edge_labels = st.sidebar.checkbox(
+        "Show edge labels",
+        value=st.session_state["dep_show_edge_labels"],
+        key="dep_show_edge_labels",
+    )
+
+    if st.sidebar.button("Reset focus"):
+        st.session_state["dep_focus_node"] = None
+        st.session_state["dep_selected_node"] = None
+        st.rerun()
+
+    sync_dependency_query_params(
+        st.session_state.get("dep_focus_node"),
+        search_text,
+        include_properties,
+        selected_method_levels,
+    )
+
+    view = build_dependency_view(
+        model,
+        selected_components=selected_components,
+        selected_method_levels=selected_method_levels,
+        search_text=search_text,
+        focus_node=st.session_state.get("dep_focus_node"),
+        selected_node=st.session_state.get("dep_selected_node"),
+        include_properties=include_properties,
+    )
+
+    st.caption("Detected format: `dependency-graph`")
+    show_summary(view["summary"])
+
+    subtitle_parts = ["Force layout"]
+    if view["focus_node"]:
+        subtitle_parts.append(f"focused on {view['focus_node']}")
+    if search_text.strip():
+        subtitle_parts.append(f"{view['match_count']} highlighted match(es)")
+
+    option = create_dependency_echarts_option(
+        view["nodes"],
+        view["links"],
+        view["categories"],
+        subtitle=" | ".join(subtitle_parts),
+        show_edge_labels=show_edge_labels,
+    )
+
+    graph_col, details_col = st.columns([2.7, 1.3], gap="large")
+    with graph_col:
+        chart_event = render_graph_component(
+            option,
+            height_px=960,
+            enable_events=True,
+            key="dependency_graph_chart",
+        )
+        if handle_dependency_event(chart_event, model):
+            sync_dependency_query_params(
+                st.session_state.get("dep_focus_node"),
+                st.session_state.get("dep_search_text", ""),
+                st.session_state.get("dep_include_properties", False),
+                st.session_state.get("dep_selected_method_levels", []),
+            )
+            st.rerun()
+
+    with details_col:
+        if view["focus_node"]:
+            st.success(f"Focused neighborhood: {view['focus_node']}")
+        render_dependency_details(view["details"])
+
+    if edited_data.get("timeline"):
+        with st.expander("Timeline data"):
+            st.dataframe(edited_data["timeline"], use_container_width=True)
+
+
+def render_json_ld_view(edited_data):
+    st.caption("Detected format: `json-ld`")
+    hide_units_and_literals = st.sidebar.checkbox("Hide literal nodes", value=False)
+    show_edge_labels = st.sidebar.checkbox("Show edge labels", value=False)
+    nodes, links, categories, summary, title = extract_json_ld_graph_data(
+        edited_data,
+        hide_units_and_literals=hide_units_and_literals,
+    )
+    show_summary(summary)
+    option = create_json_ld_option(
+        nodes,
+        links,
+        categories,
+        title=title,
+        subtitle="Force layout",
+        show_edge_labels=show_edge_labels,
+    )
+    render_graph_component(
+        option,
+        height_px=1000,
+        enable_events=False,
+        key="json_ld_graph_chart",
+    )
+
+
 def main():
     st.set_page_config(layout="wide")
     st.title("Graph Visualization")
@@ -616,6 +649,8 @@ def main():
     source_options = ["Default JSON-LD example", "Upload JSON file"]
     if DEFAULT_DEPENDENCY_GRAPH_PATH.exists():
         source_options.insert(0, "Local dependency graph")
+    if ENRICHED_DEPENDENCY_GRAPH_PATH.exists():
+        source_options.insert(1, "Enriched dependency sample")
 
     source_choice = st.radio("Data source", source_options, horizontal=True)
     uploaded_file = None
@@ -627,6 +662,8 @@ def main():
             return
     elif source_choice == "Local dependency graph":
         st.caption(f"Loaded from `{DEFAULT_DEPENDENCY_GRAPH_PATH}`")
+    elif source_choice == "Enriched dependency sample":
+        st.caption(f"Loaded from `{ENRICHED_DEPENDENCY_GRAPH_PATH}`")
 
     try:
         source_data = load_source_data(source_choice, uploaded_file)
@@ -648,57 +685,10 @@ def main():
         st.error("Unsupported format. Expected JSON-LD with @graph or a dependency graph with nodes and edges.")
         return
 
-    st.caption(f"Detected format: `{graph_format}`")
-
-    hide_units_and_literals = False
-    selected_components = None
-    show_edge_labels = st.checkbox("Show edge labels", value=graph_format == "dependency-graph")
-
-    if graph_format == "json-ld":
-        hide_units_and_literals = st.checkbox("Hide literal nodes", value=False)
+    if graph_format == "dependency-graph":
+        render_dependency_explorer(edited_data)
     else:
-        component_ids = sorted(
-            {node.get("component_id", "Unknown") for node in edited_data.get("nodes", [])},
-            key=lambda value: (str(type(value)), str(value)),
-        )
-        selected_components = st.multiselect(
-            "Filter by component_id",
-            component_ids,
-            default=component_ids,
-        )
-        st.caption("Node fill color shows workflow kind. Border color shows component membership.")
-
-    try:
-        nodes, links, categories, summary, title = extract_graph_data(
-            edited_data,
-            hide_units_and_literals=hide_units_and_literals,
-            selected_components=selected_components,
-        )
-    except Exception as exc:
-        st.error(f"Error extracting graph data: {exc}")
-        return
-
-    if not nodes:
-        st.error("No nodes were extracted from the data.")
-        return
-
-    show_summary(summary)
-    option = create_echarts_option(
-        nodes,
-        links,
-        categories,
-        title=title,
-        subtitle="Force layout",
-        layout="force",
-        show_edge_labels=show_edge_labels,
-    )
-    st_echarts(options=option, height="1000px")
-
-    if graph_format == "dependency-graph" and edited_data.get("timeline"):
-        with st.expander("Timeline data"):
-            st.dataframe(edited_data["timeline"], use_container_width=True)
-    elif graph_format == "json-ld":
-        display_examples()
+        render_json_ld_view(edited_data)
 
 
 if __name__ == "__main__":
