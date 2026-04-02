@@ -6,9 +6,9 @@ import streamlit as st
 
 from dependency_explorer import (
     build_dependency_view,
-    create_dependency_echarts_option,
     normalize_dependency_graph,
 )
+from dependency_graph_component import render_dependency_graph_component
 from graph_component import render_graph_component
 
 
@@ -468,7 +468,6 @@ def initialize_dependency_state(model):
         st.session_state["dep_selected_method_levels"] = selected_levels or list(model["method_levels"])
     else:
         st.session_state["dep_selected_method_levels"] = []
-        st.session_state["dep_include_properties"] = False
 
     valid_node_ids = set(model["nodes_by_id"])
     if st.session_state.get("dep_focus_node") not in valid_node_ids:
@@ -576,26 +575,19 @@ def render_dependency_explorer(edited_data):
     st.caption("Detected format: `dependency-graph`")
     show_summary(view["summary"])
 
-    subtitle_parts = ["Force layout"]
+    subtitle_parts = ["Layered layout"]
     if view["focus_node"]:
         subtitle_parts.append(f"focused on {view['focus_node']}")
     if search_text.strip():
         subtitle_parts.append(f"{view['match_count']} highlighted match(es)")
 
-    option = create_dependency_echarts_option(
-        view["nodes"],
-        view["links"],
-        view["categories"],
-        subtitle=" | ".join(subtitle_parts),
-        show_edge_labels=show_edge_labels,
-    )
-
     graph_col, details_col = st.columns([2.7, 1.3], gap="large")
     with graph_col:
-        chart_event = render_graph_component(
-            option,
+        st.caption(" | ".join(subtitle_parts))
+        chart_event = render_dependency_graph_component(
+            graph=view["graph"],
             height_px=960,
-            enable_events=True,
+            show_edge_labels=show_edge_labels,
             key="dependency_graph_chart",
         )
         if handle_dependency_event(chart_event, model):

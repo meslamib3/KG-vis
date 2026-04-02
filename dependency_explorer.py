@@ -306,6 +306,7 @@ def build_dependency_view(
     }
 
     nodes = []
+    graph_nodes = []
     for node_id in sorted(visible_node_ids):
         node = eligible_nodes[node_id]
         degree = degree_counter[node_id]
@@ -351,10 +352,26 @@ def build_dependency_view(
                 },
             }
         )
+        graph_nodes.append(
+            {
+                "id": node_id,
+                "label": node["label"],
+                "short_label": node["short_label"],
+                "component_id": node["component_id"],
+                "method_level": node.get("method_level"),
+                "method_kind": node["method_kind"],
+                "degree": degree,
+                "matched": is_match,
+                "selected": is_selected,
+                "focused": is_focus,
+            }
+        )
 
     links = []
+    graph_edges = []
     for edge in visible_edges:
         is_focus_edge = focus_node and focus_node in {edge["source"], edge["target"]}
+        is_selected_edge = selected_node and selected_node in {edge["source"], edge["target"]}
         is_match = edge["edge_id"] in matched_edge_ids
         links.append(
             {
@@ -371,6 +388,18 @@ def build_dependency_view(
                 "emphasis": {"disabled": False},
             }
         )
+        graph_edges.append(
+            {
+                "id": edge["edge_id"],
+                "source": edge["source"],
+                "target": edge["target"],
+                "relation": edge["relation"],
+                "connecting_properties": edge["connecting_properties"],
+                "matched": is_match,
+                "selected": bool(is_selected_edge),
+                "focused": bool(is_focus_edge),
+            }
+        )
 
     summary = {
         "node_count": len(visible_node_ids),
@@ -383,69 +412,18 @@ def build_dependency_view(
         "nodes": nodes,
         "links": links,
         "categories": build_dependency_categories(),
+        "graph": {
+            "nodes": graph_nodes,
+            "edges": graph_edges,
+            "selected_node": selected_node,
+            "focus_node": focus_node,
+            "match_count": len(matched_node_ids),
+            "search_text": search_text.strip(),
+            "include_properties": include_properties,
+        },
         "summary": summary,
         "focus_node": focus_node,
         "selected_node": selected_node,
         "details": _build_node_details(model, selected_node or focus_node, eligible_edges),
         "match_count": len(matched_node_ids),
-    }
-
-
-def create_dependency_echarts_option(
-    nodes: list[dict[str, Any]],
-    links: list[dict[str, Any]],
-    categories: list[dict[str, Any]],
-    subtitle: str,
-    show_edge_labels: bool,
-) -> dict[str, Any]:
-    return {
-        "title": {
-            "text": "Dependency Graph Explorer",
-            "subtext": subtitle,
-            "top": "bottom",
-            "left": "right",
-        },
-        "legend": [
-            {
-                "data": [category["name"] for category in categories],
-                "orient": "vertical",
-                "left": "left",
-                "top": "middle",
-            }
-        ],
-        "animationDurationUpdate": 1200,
-        "animationEasingUpdate": "quinticInOut",
-        "series": [
-            {
-                "name": "Dependency Graph Explorer",
-                "type": "graph",
-                "layout": "force",
-                "data": nodes,
-                "links": links,
-                "categories": categories,
-                "roam": True,
-                "draggable": True,
-                "focusNodeAdjacency": True,
-                "label": {
-                    "position": "right",
-                    "hideOverlap": True,
-                    "fontSize": 10,
-                },
-                "lineStyle": {"color": "source"},
-                "edgeSymbol": ["none", "arrow"],
-                "edgeSymbolSize": [4, 10],
-                "edgeLabel": {
-                    "show": show_edge_labels,
-                    "fontSize": 9,
-                    "formatter": "{c}",
-                },
-                "force": {
-                    "repulsion": 380,
-                    "gravity": 0.05,
-                    "edgeLength": [90, 180],
-                },
-                "emphasis": {"focus": "adjacency", "lineStyle": {"width": 4}},
-                "tooltip": {"show": True},
-            }
-        ],
     }
